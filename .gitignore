@@ -1,0 +1,20 @@
+node_modules/
+
+# TypeScript build output
+*.js
+*.js.map
+*.d.ts
+
+# IDE/editor specific files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build output
+dist/
+
+# Custom
+static/
+.DS_Store
