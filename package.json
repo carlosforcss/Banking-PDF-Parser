@@ -1,13 +1,13 @@
 {
   "name": "ls",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Parse banking PDFs and expose them as a Rest API.",
   "main": "src/index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "test:bbva": "ts-node src/index.ts",
     "build": "tsc"
   },
-  "author": "",
+  "author": "Carlos David Sanchez Moreno",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^5.3.3"

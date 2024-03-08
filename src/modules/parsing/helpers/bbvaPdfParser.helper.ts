@@ -1,6 +1,6 @@
 import * as pdf from "pdf-parse";
-import { BBVAParsingResult } from "@common/interfaces/movements";
-import { logger } from '../../../common/utils/logger'
+import { BBVAParsingResult } from "../interfaces/bbva.interface";
+import { logger } from '../../../common/utils/logger';
 
 export class BBVAPdfParser {
   pdfContent: string;
