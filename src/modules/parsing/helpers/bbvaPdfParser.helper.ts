@@ -23,6 +23,11 @@ export class BBVAPdfParser {
     return parseFloat(numberWithCommaRemoved);
   }
 
+  stringToDate(dateString: string): Date {
+    const [day, month, year] = dateString.split('/').map(Number);
+    return new Date(year, month - 1, day);
+  }
+
   _getAccountNumber(): string {
     return this.executeRegex(
       /No\. de Cuenta(\d+)/,
@@ -184,6 +189,16 @@ export class BBVAPdfParser {
     }
   }
 
+  _getCoverageDates(): any {
+    const coverageRegex = /PeriodoDEL (\d{2}\/\d{2}\/\d{4}) AL (\d{2}\/\d{2}\/\d{4})/
+    const results = this.pdfContent.match(coverageRegex) || []
+    console.log(results[1], results[2])
+    return {
+      startDate: this.stringToDate(results[1]),
+      endDate: this.stringToDate(results[2])
+    }
+  }
+
   _cleanText(): void {
     this.pdfContent = this.pdfContent.replace(
       /No\. de Cuenta\n([\s\S]*?)(?:\n(?=\n)|$)/g,
@@ -201,6 +216,7 @@ export class BBVAPdfParser {
       finalBalance: this._getFinalBalance(),
       averageBalance: this._getAverageBalance(),
       startBalance: this._getStartBalance(),
+      coverage: this._getCoverageDates(),
       thirdPartyMovements: this._getThirdPartyPayments(),
       receiveMovements: this._getReceivedSpeiTransactions(),
       standardMovements: this._getStandardTransactions(),

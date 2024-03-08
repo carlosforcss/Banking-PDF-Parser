@@ -2,6 +2,7 @@ import axios from 'axios';
 import { logger } from '../../../common/utils/logger';
 import { AccountState, Movement, MovementType } from '../../../common/interfaces/movements';
 import { BBVAPdfParser } from "../helpers/bbvaPdfParser.helper";
+import { bbvaMonthsFormat } from "../interfaces/bbva.interface"
 
 
 export class BBVAController{
@@ -19,11 +20,18 @@ export class BBVAController{
     }
   }
 
+  _normalizeDate (bbvaFormatDate: string, year: number): string {
+    const [day, month] = bbvaFormatDate.split("/")
+    const isoFormatMonth = bbvaMonthsFormat[month]
+    return `${day}/${isoFormatMonth}/${year}`
+  }
+
   async normalizeMovements(bbvaParsedResult: any): Promise<AccountState> {
     const movements: Array<Movement> = new Array<Movement>();
+    console.log(bbvaParsedResult.coverage.startDate)
     bbvaParsedResult.standardMovements.movements.forEach(movement => {
       movements.push({
-        date: movement.date,
+        date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
         time: movement.time,
         concept: movement.concept,
@@ -33,7 +41,7 @@ export class BBVAController{
     })
     bbvaParsedResult.sentMovements.movements.forEach(movement => {
       movements.push({
-        date: movement.date,
+        date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
         reference: movement.reference,
         concept: movement.concept,
@@ -42,7 +50,7 @@ export class BBVAController{
     })
     bbvaParsedResult.receiveMovements.movements.forEach(movement => {
       movements.push({
-        date: movement.date,
+        date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
         reference: movement.reference,
         concept: movement.concept,
@@ -51,7 +59,7 @@ export class BBVAController{
     })
     bbvaParsedResult.creditCardPayments.movements.forEach(movement => {
       movements.push({
-        date: movement.date,
+        date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
         reference: movement.reference,
         concept: "CREDIT CARD PAYMENT",
@@ -60,7 +68,7 @@ export class BBVAController{
     })
     bbvaParsedResult.thirdPartyMovements.movements.forEach(movement => {
       movements.push({
-        date: movement.date,
+        date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
         movementType: MovementType.DEBIT,
         concept: "Third Party Movement",
@@ -69,7 +77,7 @@ export class BBVAController{
     })
     bbvaParsedResult.bankPayments.movements.forEach(movement => {
       movements.push({
-        date: movement.date,
+        date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
         movementType: MovementType.DEBIT,
         concept: movement.concept,
