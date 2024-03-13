@@ -66,7 +66,7 @@ export class BBVAPdfParser {
     const transactionInfoPattern = /(\d{2}\/[A-Z]{3}){2}\n(.*?)\n([\d,]+\.\d{2})([\d,]+\.\d{2})?([\d,]+\.\d{2})?\n\s*?RFC:\s*(.*?)? (\d{2}:\d{2}) AUT: (\d+) Referencia (.*?)\n/g;
     let match;
     let counter = 0;
-    let movements = [];
+    const movements = [];
     while ((match = transactionInfoPattern.exec(this.pdfContent)) !== null) {
       const movement = {
         date: match[1],
@@ -110,7 +110,7 @@ export class BBVAPdfParser {
     const transactionInfoPattern = /(\d{2}\/[A-Z]{3}){2}\nSPEI RECIBIDO(.*?)\n([\d,]+\.\d{2})([\d,]+\.\d{2})?([\d,]+\.\d{2})?\n\s(.*?) Referencia (.*?)\n/g;
     let match;
     let counter = 0;
-    let movements = [];
+    const movements = [];
     while ((match = transactionInfoPattern.exec(this.pdfContent)) !== null) {
       movements.push({
         date: match[1],
@@ -131,7 +131,7 @@ export class BBVAPdfParser {
     const transactionInfoPattern = /(\d{2}\/[A-Z]{3}){2}\nSPEI ENVIADO (.*?)\n([\d,]+\.\d{2})([\d,]+\.\d{2})?([\d,]+\.\d{2})?\n\s+(.*)? Referencia (.*?)\n\s+(.*?)\n\s+(.*?)\n\s+(.*?)\n/g;
     let match;
     let counter = 0;
-    let movements = [];
+    const movements = [];
     while ((match = transactionInfoPattern.exec(this.pdfContent)) !== null) {
       movements.push({
         date: match[1],
@@ -154,7 +154,7 @@ export class BBVAPdfParser {
     const transactionInfoPattern = /(\d{2}\/[A-Z]{3}){2}\nPAGO TARJETA DE CREDITO\n([\d,]+\.\d{2})([\d,]+\.\d{2})?([\d,]+\.\d{2})?\n\s+(.*)? CUENTA: (.*?) Referencia (.*?)\n/g;
     let match;
     let counter = 0;
-    let movements = [];
+    const movements = [];
     while ((match = transactionInfoPattern.exec(this.pdfContent)) !== null) {
       movements.push({
         date: match[1],
@@ -172,7 +172,7 @@ export class BBVAPdfParser {
   _getThirdPartyPayments(): any {
     const transactionInfoPattern = /(\d{2}\/[A-Z]{3}){2}\nPAGO CUENTA DE TERCERO\n([\d,]+\.\d{2})([\d,]+\.\d{2})?([\d,]+\.\d{2})?\n .*? BNET (.*?) Referencia (.*?)\n/g;
     let match;
-    let movements = [];
+    const movements = [];
     let counter = 0;
     while ((match = transactionInfoPattern.exec(this.pdfContent)) !== null) {
       movements.push({
