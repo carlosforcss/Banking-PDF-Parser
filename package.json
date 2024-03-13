@@ -1,6 +1,6 @@
 {
   "name": "ls",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Parse banking PDFs and expose them as a Rest API.",
   "main": "src/index.js",
   "scripts": {
