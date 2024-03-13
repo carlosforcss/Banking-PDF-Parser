@@ -10,6 +10,10 @@ export interface BBVAParsingResult {
   creditCardPayments: any;
   bankPayments: any;
   coverage: any;
+  numberOfCredits: number;
+  numberOfDebits: number;
+  debitAmount: number;
+  creditAmount: number;
 }
 
 

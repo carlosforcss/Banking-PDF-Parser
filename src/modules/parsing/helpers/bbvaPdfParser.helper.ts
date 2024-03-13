@@ -115,7 +115,7 @@ export class BBVAPdfParser {
       movements.push({
         date: match[1],
         concept: match[6],
-        amount: match[3],
+        amount: this.stringToNumber(match[3]),
         reference: match[7],
         receptionSystem: match[8]
       })
@@ -135,7 +135,7 @@ export class BBVAPdfParser {
     while ((match = transactionInfoPattern.exec(this.pdfContent)) !== null) {
       movements.push({
         date: match[1],
-        amount: match[3],
+        amount: this.stringToNumber(match[3]),
         bankName: match[2],
         concept: match[6],
         contact: match[10],
@@ -199,6 +199,30 @@ export class BBVAPdfParser {
     }
   }
 
+  _getNumberOfDebits(): any {
+    const numberOfDebitsRegex = /TOTAL MOVIMIENTOS CARGOS(\d+)\n/;
+    const results = this.pdfContent.match(numberOfDebitsRegex)
+    return this.stringToNumber(results[1])
+  }
+
+  _getNumberOfCredits(): any {
+    const numberOfCreditsRegex = /TOTAL MOVIMIENTOS ABONOS(\d+)\n/;
+    const results = this.pdfContent.match(numberOfCreditsRegex)
+    return this.stringToNumber(results[1])
+  }
+
+  _getCreditAmount(): any {
+    const creditAmountRegex = /TOTAL IMPORTE ABONOS([\d,]+\.\d{2})TOTAL MOVIMIENTOS ABONOS/;
+    const results = this.pdfContent.match(creditAmountRegex)
+    return this.stringToNumber(results[1])
+  }
+
+  _getDebitAmount(): any {
+    const debitAmountRegex = /TOTAL IMPORTE CARGOS([\d,]+\.\d{2})TOTAL MOVIMIENTOS CARGOS/;
+    const results = this.pdfContent.match(debitAmountRegex)
+    return this.stringToNumber(results[1])
+  }
+
   _cleanText(): void {
     this.pdfContent = this.pdfContent.replace(
       /No\. de Cuenta\n([\s\S]*?)(?:\n(?=\n)|$)/g,
@@ -222,7 +246,11 @@ export class BBVAPdfParser {
       standardMovements: this._getStandardTransactions(),
       sentMovements: this._getSentSpeiTransactions(),
       creditCardPayments: this._getCreditCardPayments(),
-      bankPayments: this._getBankPayments()
+      bankPayments: this._getBankPayments(),
+      numberOfCredits: this._getNumberOfCredits(),
+      numberOfDebits: this._getNumberOfDebits(),
+      debitAmount: this._getDebitAmount(),
+      creditAmount: this._getCreditAmount()
     }
     return parsingResult
   }

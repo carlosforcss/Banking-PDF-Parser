@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { logger } from '../../../common/utils/logger';
-import { AccountState, Movement, MovementType } from '../../../common/interfaces/movements';
-import { BBVAPdfParser } from "../helpers/bbvaPdfParser.helper";
-import { bbvaMonthsFormat } from "../interfaces/bbva.interface"
+import {logger} from '../../../common/utils/logger';
+import {AccountState, Movement, MovementType} from '../../../common/interfaces/movements';
+import {BBVAPdfParser} from "../helpers/bbvaPdfParser.helper";
+import {bbvaMonthsFormat, BBVAParsingResult} from "../interfaces/bbva.interface"
 
 
 export class BBVAController{
@@ -91,12 +91,36 @@ export class BBVAController{
     };
   }
 
+  validateMovements(bbvaAccountState: BBVAParsingResult, accountState: AccountState): AccountState {
+    const debits: Movement[] = accountState.movements.filter(movement => movement.movementType == MovementType.DEBIT)
+    const credits: Movement[] = accountState.movements.filter(movement => movement.movementType == MovementType.CREDIT)
+    const valid: boolean = (debits.length === bbvaAccountState.numberOfDebits && credits.length === bbvaAccountState.numberOfCredits);
+    accountState.validations = {
+      numberOfDebitsFound: debits.length,
+      numberOfCreditsFound: credits.length,
+      numberOfExistingCredits: bbvaAccountState.numberOfCredits,
+      numberOfExistingDebits: bbvaAccountState.numberOfDebits,
+      amountOfCreditFound: credits.reduce((total, obj) => {
+        return total + obj.amount;
+      }, 0),
+      amountOfDebitFound: debits.reduce((total, obj) => {
+        return total + obj.amount;
+      }, 0),
+      amountOfExistingCredit: bbvaAccountState.creditAmount,
+      amountOfExistingDebit: bbvaAccountState.debitAmount,
+      valid: valid
+    }
+    return accountState
+  }
+
   async parseFromUrl(url: string, normalize: boolean = true): Promise<any> {
     logger.info(`BBVAController.parseFromUrl -> ${url}`)
     const fileBuffer: Buffer = await this.readFileBufferFromUrl(url);
     const pdfParser = new BBVAPdfParser();
     if (normalize) {
-      return this.normalizeMovements(await pdfParser.parse(fileBuffer));
+      const bbvaAccountState = await pdfParser.parse(fileBuffer);
+      const normalizedMovements = await this.normalizeMovements(bbvaAccountState);
+      return this.validateMovements(bbvaAccountState, normalizedMovements);
     }
     return await pdfParser.parse(fileBuffer);
   }

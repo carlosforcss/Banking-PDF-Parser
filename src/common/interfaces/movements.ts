@@ -6,9 +6,23 @@ export enum MovementType {
 }
 
 
+export interface Validation {
+  numberOfDebitsFound: number;
+  numberOfCreditsFound: number;
+  numberOfExistingCredits: number;
+  numberOfExistingDebits: number;
+  amountOfCreditFound: number;
+  amountOfDebitFound: number;
+  amountOfExistingCredit: number;
+  amountOfExistingDebit: number;
+  valid: boolean;
+}
+
+
 export interface AccountState {
   accountNumber: string;
   movements: Array<Movement>;
+  validations?: Validation;
 }
 
 
