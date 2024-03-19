@@ -1,8 +1,8 @@
 
 
 export enum MovementType {
-  CREDIT = "Credit",
-  DEBIT = "Debit"
+  CREDIT = "CREDIT",
+  DEBIT = "DEBIT"
 }
 
 

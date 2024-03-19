@@ -3,9 +3,10 @@ import {BBVAController} from "../../parsing/controllers/bbva.controller";
 import { logger } from '../../../common/utils/logger';
 
 export const handler: APIGatewayProxyHandler = async (event) => {
-  logger.info(`Executing BBVA Parsing function -> ${event} `)
+  logger.info(`Executing BBVA Parsing function -> ${JSON.stringify(event)} `)
+  const eventBody = JSON.parse(event.body);
   try {
-    const response = await new BBVAController().parseFromUrl(event.url);
+    const response = await new BBVAController().parseFromUrl(eventBody.url);
     return {
       statusCode: 200,
       body: JSON.stringify(response),

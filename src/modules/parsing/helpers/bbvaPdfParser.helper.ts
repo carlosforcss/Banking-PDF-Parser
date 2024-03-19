@@ -107,7 +107,7 @@ export class BBVAPdfParser {
   }
 
   _getReceivedSpeiTransactions(): any {
-    const transactionInfoPattern = /(\d{2}\/[A-Z]{3}){2}\nSPEI RECIBIDO(.*?)\n([\d,]+\.\d{2})([\d,]+\.\d{2})?([\d,]+\.\d{2})?\n\s(.*?) Referencia (.*?)\n/g;
+    const transactionInfoPattern = /(\d{2}\/[A-Z]{3}){2}\nSPEI RECIBIDO(.*?)\n([\d,]+\.\d{2})([\d,]+\.\d{2})?([\d,]+\.\d{2})?\n\s+(.*?) Referencia (.*?)\n\s+(.*)\n\s+.*\n\s+(.*)\n/g;
     let match;
     let counter = 0;
     const movements = [];
@@ -117,7 +117,8 @@ export class BBVAPdfParser {
         concept: match[6],
         amount: this.stringToNumber(match[3]),
         reference: match[7],
-        receptionSystem: match[8]
+        accountNumber: match[8],
+        accountName: match[9]
       })
       counter++
     }
@@ -178,6 +179,7 @@ export class BBVAPdfParser {
       movements.push({
         amount: this.stringToNumber(match[2]),
         reference: match[6],
+        concept: match[5],
         date: match[1],
         bankSourceIdentifier: match[5]
       })

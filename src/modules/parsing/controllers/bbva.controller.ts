@@ -44,7 +44,7 @@ export class BBVAController{
         date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
         reference: movement.reference,
-        concept: movement.concept,
+        concept: `${movement.contact} - ${movement.concept.substring(7)}`,
         movementType: MovementType.DEBIT
       })
     })
@@ -53,7 +53,7 @@ export class BBVAController{
         date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
         reference: movement.reference,
-        concept: movement.concept,
+        concept: movement.concept.substring(7),
         movementType: MovementType.CREDIT
       })
     })
@@ -70,18 +70,18 @@ export class BBVAController{
       movements.push({
         date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
-        movementType: MovementType.DEBIT,
-        concept: "Third Party Movement",
-        reference: movement.reference
+        reference: movement.reference,
+        concept: `${movement.concept.substr(11)}`,
+        movementType: MovementType.DEBIT
       })
     })
     bbvaParsedResult.bankPayments.movements.forEach(movement => {
       movements.push({
         date: this._normalizeDate(movement.date, bbvaParsedResult.coverage.startDate.getFullYear()),
         amount: movement.amount,
-        movementType: MovementType.DEBIT,
+        reference: movement.reference,
         concept: movement.concept,
-        reference: movement.reference
+        movementType: MovementType.DEBIT
       })
     })
     console.log(movements.length)

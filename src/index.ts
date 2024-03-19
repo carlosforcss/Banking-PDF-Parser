@@ -6,7 +6,7 @@ async function main(): Promise<void> {
       "",
       true
     )
-    console.log(content.validations)
+    console.log(content.movements)
 }
 
 
